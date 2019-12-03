@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.utils &mdash; iHomeLab RAPT dataset 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> iHomeLab RAPT dataset
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">iHomeLab RAPT dataset</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">src.const</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.stride_tricks</span> <span class="k">import</span> <span class="n">as_strided</span> <span class="k">as</span> <span class="n">strided</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">mysql.connector</span> <span class="k">import</span> <span class="n">MySQLConnection</span><span class="p">,</span> <span class="n">Error</span>
+
+<div class="viewcode-block" id="anonymise"><a class="viewcode-back" href="../../src.html#src.utils.anonymise">[docs]</a><span class="k">def</span> <span class="nf">anonymise</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param df: dataframe that we want to anonymize the columns of</span>
+<span class="sd">    :param key: key for anonymization dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">columnNames</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">columnNames</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">dictAnon</span><span class="p">[</span><span class="n">key</span><span class="p">])},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mask_knans"><a class="viewcode-back" href="../../src.html#src.utils.mask_knans">[docs]</a><span class="k">def</span> <span class="nf">mask_knans</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    we specify a maximum of consecutive NaN we allow to be interpolated</span>
+
+<span class="sd">    Example usage::</span>
+
+<span class="sd">         df[&quot;col&quot;] = df[&quot;col&quot;].interpolate(method=&#39;linear&#39;).where(mask_knans(df[&quot;col&quot;], int(15*60/300)))</span>
+
+<span class="sd">    :param df: column of pandas dataframe</span>
+<span class="sd">    :param x: maximum tolerance of NaN values</span>
+
+<span class="sd">    :returns: boolean mapping of rows where we should interpolate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">df</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool8</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">strided</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">])</span>
+
+    <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">m</span></div>
+
+<div class="viewcode-block" id="countNaN"><a class="viewcode-back" href="../../src.html#src.utils.countNaN">[docs]</a><span class="k">def</span> <span class="nf">countNaN</span><span class="p">(</span><span class="n">array_like</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    used in combination with resampling::</span>
+
+<span class="sd">        df.resample(&quot;3D&quot;).apply(countNaN)</span>
+
+
+<span class="sd">    :param array_like: usually a partial column of dataframe</span>
+
+<span class="sd">    :returns: scalar value, namely the percentage of NaN values in array_like</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array_like</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">cnt</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">array_like</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generateHeatmap"><a class="viewcode-back" href="../../src.html#src.utils.generateHeatmap">[docs]</a><span class="k">def</span> <span class="nf">generateHeatmap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">pmin</span><span class="p">,</span><span class="n">pmax</span><span class="p">,</span><span class="n">resampleString</span><span class="p">,</span><span class="n">preName</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    generate a heatplot of the missing data, using the seaborn visualization tool</span>
+
+
+<span class="sd">    :param df: dataframe where each column is a sensor, index is a date series</span>
+<span class="sd">    :param size: (width, height) tuple in inches of output image</span>
+<span class="sd">    :param pmin: min percentage where colorscale should begin :math:`\\in [0,1)`</span>
+<span class="sd">    :param pmax: max percentage where colorscale should end :math:`\\in (0,1]`</span>
+<span class="sd">    :param resampleString: how much should be summarized in block visually, for example &quot;3D&quot; = 3 days: show percentage of NaN per 3 days</span>
+<span class="sd">    :param preName: image will be saved as :code:`preName+&quot;_&quot;+resampleString+&quot;.png&quot;`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">resampleString</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">countNaN</span><span class="p">)</span>
+    
+    <span class="c1">#convert date to string in desired format to display in heatmap</span>
+    <span class="n">as_list</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">as_list</span><span class="p">)):</span>
+        <span class="n">as_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">df6</span> <span class="o">=</span> <span class="n">df2</span>
+    <span class="n">df6</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">as_list</span>
+    <span class="n">a4_dims</span> <span class="o">=</span> <span class="n">size</span> <span class="c1">#size of heatmap</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">a4_dims</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df6</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">vmin</span><span class="o">=</span><span class="n">pmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">pmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span><span class="n">square</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+    <span class="c1">#sns.heatmap(df6.transpose(), vmin=.0, vmax=1., cmap=&#39;gist_ncar&#39;,square=False, ax = ax)</span>
+
+    <span class="c1"># put the labels at 45deg since they tend to be too long</span>
+    <span class="c1">#fig.autofmt_xdate()</span>
+    
+    <span class="c1">#plt.show()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">preName</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">resampleString</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">)</span> <span class="c1">#save heatmap</span></div>
+
+
+<div class="viewcode-block" id="reportMissingData"><a class="viewcode-back" href="../../src.html#src.utils.reportMissingData">[docs]</a><span class="k">def</span> <span class="nf">reportMissingData</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">freq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    writes start and end date of missing data to a csv file in the &quot;missingData&quot; directory</span>
+<span class="sd">    </span>
+<span class="sd">    :param df: dataframe with multiple sensors as columns</span>
+<span class="sd">    :param freq: frequency as integer that df uses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sensorList</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">missingDict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">sensorList</span><span class="p">:</span>
+        <span class="c1">#print(&quot;working on &quot;, sensor)</span>
+        <span class="n">missingDatesArray</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">sensor</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()][</span><span class="n">sensor</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">currentStartDate</span> <span class="o">=</span> <span class="n">missingDatesArray</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lenMissingDatesArray</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">missingDatesArray</span><span class="p">)</span>
+        <span class="n">arrayOfMissingDates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">missingDatesArray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="n">lenMissingDatesArray</span><span class="p">:</span>
+                <span class="n">arrayOfMissingDates</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">currentStartDate</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nextEl</span> <span class="o">=</span> <span class="n">missingDatesArray</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">timeDiff</span> <span class="o">=</span> <span class="p">(</span><span class="n">nextEl</span> <span class="o">-</span> <span class="n">el</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">timeDiff</span> <span class="o">&gt;</span> <span class="n">freq</span><span class="p">:</span>
+                    <span class="n">arrayOfMissingDates</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">currentStartDate</span><span class="p">,</span> <span class="n">el</span><span class="p">])</span>
+                    <span class="n">currentStartDate</span> <span class="o">=</span> <span class="n">nextEl</span>
+
+        <span class="n">missingDict</span><span class="p">[</span><span class="n">sensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">arrayOfMissingDates</span>
+        <span class="n">dfMissing</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">missingDict</span><span class="p">[</span><span class="n">sensor</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dfMissing</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">dfMissing</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;missingData/&quot;</span><span class="o">+</span><span class="n">sensor</span><span class="o">+</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, iHomeLab
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.db &mdash; iHomeLab RAPT dataset 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> iHomeLab RAPT dataset
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">iHomeLab RAPT dataset</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.db</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.db</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">mysql.connector</span> <span class="k">import</span> <span class="n">MySQLConnection</span><span class="p">,</span> <span class="n">Error</span>
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="k">import</span> <span class="n">ConfigParser</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">src.utils</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="read_db_config"><a class="viewcode-back" href="../../src.html#src.db.read_db_config">[docs]</a><span class="k">def</span> <span class="nf">read_db_config</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;program_config.ini&#39;</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s1">&#39;mysql_shiftable&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param filename: path to program_config.ini</span>
+<span class="sd">    :param section: where to look for db info in .ini file</span>
+<span class="sd">    :returns: kwargs for  MySQLConnection</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        config = read_db_config(&#39;program_config.ini&#39;, section=&#39;mysql_nonshiftable&#39;)</span>
+<span class="sd">        connection = MySQLConnection(**config)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># create parser and read ini configuration file</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="c1"># get section, default to mysql</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">has_section</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">db</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> not found in the </span><span class="si">{1}</span><span class="s1"> file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">db</span></div>
+
+
+<div class="viewcode-block" id="getSensorNamesForHouse"><a class="viewcode-back" href="../../src.html#src.db.getSensorNamesForHouse">[docs]</a><span class="k">def</span> <span class="nf">getSensorNamesForHouse</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">abbreviation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param cursor: db cursor</span>
+<span class="sd">    :param abbreviation: abbrevation for house</span>
+
+<span class="sd">    :returns: array of all sensors as string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; SELECT NAME </span>
+<span class="s2">                FROM</span>
+<span class="s2">                    Sensors </span>
+<span class="s2">                WHERE</span>
+<span class="s2">                    NAME LIKE &#39;</span><span class="si">{0}</span><span class="s2">%&#39;&quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">abbreviation</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="getDFForQuery"><a class="viewcode-back" href="../../src.html#src.db.getDFForQuery">[docs]</a><span class="k">def</span> <span class="nf">getDFForQuery</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param cursor: db connection cursor</span>
+<span class="sd">    :param query: database query</span>
+
+
+<span class="sd">    :returns: (not Empty: Bool, pandas dataframe of result)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">column_names</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="getDFForQueryAnon"><a class="viewcode-back" href="../../src.html#src.db.getDFForQueryAnon">[docs]</a><span class="k">def</span> <span class="nf">getDFForQueryAnon</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param cursor: db connection cursor</span>
+<span class="sd">    :param query: database query</span>
+<span class="sd">    :param key: key to anonymise data</span>
+
+
+<span class="sd">    :returns: (not Empty: Bool, pandas dataframe of result which is anonymized in addition)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">column_names</span>
+        <span class="n">anonymise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="queryForSensor"><a class="viewcode-back" href="../../src.html#src.db.queryForSensor">[docs]</a><span class="k">def</span> <span class="nf">queryForSensor</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startD</span><span class="p">,</span> <span class="n">endD</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    often used in combination with getDFForQuery::</span>
+
+<span class="sd">        success, result = getDFForQuery(queryForSensor(&quot;name&quot;, &quot;2018-12-12 12:12:12&quot;, &quot;2019-12-12 12:12:12&quot;))</span>
+
+<span class="sd">    :param name: name of sensor</span>
+<span class="sd">    :param stardD: startdate as string</span>
+<span class="sd">    :param endD: endDate as string:</span>
+
+<span class="sd">    :returns: query string to select all values between startdate and enddate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;SELECT DateTime, Value as </span><span class="si">{0}</span><span class="s1"> FROM SensorValues as sv WHERE SensorName = &quot;</span><span class="si">{0}</span><span class="s1">&quot; AND DateTime &gt;= &quot;</span><span class="si">{1}</span><span class="s1">&quot; AND DateTime &lt; &quot;</span><span class="si">{2}</span><span class="s1">&quot; ORDER BY DateTime&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">startD</span><span class="p">,</span><span class="n">endD</span><span class="p">)</span></div>
+
+<span class="c1">#return capturePeriod for a specific sensor name</span>
+<div class="viewcode-block" id="getCapturePeriodForSensorName"><a class="viewcode-back" href="../../src.html#src.db.getCapturePeriodForSensorName">[docs]</a><span class="k">def</span> <span class="nf">getCapturePeriodForSensorName</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assumes name exists in db</span>
+
+<span class="sd">    :param cursor: db connection cursor</span>
+<span class="sd">    :param name: name of sensor</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: capture peroid of (sensor)name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; SELECT CapturePeriod </span>
+<span class="s2">                FROM</span>
+<span class="s2">                    SensorValues</span>
+<span class="s2">                WHERE</span>
+<span class="s2">                    SensorName = &#39;</span><span class="si">{0}</span><span class="s2">&#39; LIMIT 1&quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, iHomeLab
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

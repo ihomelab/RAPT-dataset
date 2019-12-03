@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src package &mdash; iHomeLab RAPT dataset 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="src" href="modules.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> iHomeLab RAPT dataset
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">src package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.const">src.const module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.db">src.db module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.preprocessing">src.preprocessing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.public">src.public module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.utils">src.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">iHomeLab RAPT dataset</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>src package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/src.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="src-package">
+<h1>src package<a class="headerlink" href="#src-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.const">
+<span id="src-const-module"></span><h2>src.const module<a class="headerlink" href="#module-src.const" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="src.const.interpolationTime">
+<code class="descclassname">src.const.</code><code class="descname">interpolationTime</code><em class="property"> = 15</em><a class="headerlink" href="#src.const.interpolationTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>max tolerance in minutes for when data should be interpolated, independent of capture period</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="src.const.resampleStringForHeatmap">
+<code class="descclassname">src.const.</code><code class="descname">resampleStringForHeatmap</code><em class="property"> = '1D'</em><a class="headerlink" href="#src.const.resampleStringForHeatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>1 days, how data will be resampled to display in heatmap: examples are “3D”=3 days, “7D”=7 day, “1M”= 1 month</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.db">
+<span id="src-db-module"></span><h2>src.db module<a class="headerlink" href="#module-src.db" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="src.db.getCapturePeriodForSensorName">
+<code class="descclassname">src.db.</code><code class="descname">getCapturePeriodForSensorName</code><span class="sig-paren">(</span><em>cursor</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#getCapturePeriodForSensorName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.getCapturePeriodForSensorName" title="Permalink to this definition">¶</a></dt>
+<dd><p>assumes name exists in db</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cursor</strong> – db connection cursor</li>
+<li><strong>name</strong> – name of sensor</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">capture peroid of (sensor)name</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.db.getDFForQuery">
+<code class="descclassname">src.db.</code><code class="descname">getDFForQuery</code><span class="sig-paren">(</span><em>cursor</em>, <em>query</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#getDFForQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.getDFForQuery" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cursor</strong> – db connection cursor</li>
+<li><strong>query</strong> – database query</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(not Empty: Bool, pandas dataframe of result)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.db.getDFForQueryAnon">
+<code class="descclassname">src.db.</code><code class="descname">getDFForQueryAnon</code><span class="sig-paren">(</span><em>cursor</em>, <em>query</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#getDFForQueryAnon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.getDFForQueryAnon" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cursor</strong> – db connection cursor</li>
+<li><strong>query</strong> – database query</li>
+<li><strong>key</strong> – key to anonymise data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(not Empty: Bool, pandas dataframe of result which is anonymized in addition)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.db.getSensorNamesForHouse">
+<code class="descclassname">src.db.</code><code class="descname">getSensorNamesForHouse</code><span class="sig-paren">(</span><em>cursor</em>, <em>abbreviation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#getSensorNamesForHouse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.getSensorNamesForHouse" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cursor</strong> – db cursor</li>
+<li><strong>abbreviation</strong> – abbrevation for house</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of all sensors as string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.db.queryForSensor">
+<code class="descclassname">src.db.</code><code class="descname">queryForSensor</code><span class="sig-paren">(</span><em>name</em>, <em>startD</em>, <em>endD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#queryForSensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.queryForSensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>often used in combination with getDFForQuery:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">success</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">getDFForQuery</span><span class="p">(</span><span class="n">queryForSensor</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;2018-12-12 12:12:12&quot;</span><span class="p">,</span> <span class="s2">&quot;2019-12-12 12:12:12&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – name of sensor</li>
+<li><strong>stardD</strong> – startdate as string</li>
+<li><strong>endD</strong> – endDate as string:</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">query string to select all values between startdate and enddate</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.db.read_db_config">
+<code class="descclassname">src.db.</code><code class="descname">read_db_config</code><span class="sig-paren">(</span><em>filename='program_config.ini'</em>, <em>section='mysql_shiftable'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/db.html#read_db_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.db.read_db_config" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – path to program_config.ini</li>
+<li><strong>section</strong> – where to look for db info in .ini file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">kwargs for  MySQLConnection</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">read_db_config</span><span class="p">(</span><span class="s1">&#39;program_config.ini&#39;</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="s1">&#39;mysql_nonshiftable&#39;</span><span class="p">)</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">MySQLConnection</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.preprocessing">
+<span id="src-preprocessing-module"></span><h2>src.preprocessing module<a class="headerlink" href="#module-src.preprocessing" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="src.preprocessing.combineDfs">
+<code class="descclassname">src.preprocessing.</code><code class="descname">combineDfs</code><span class="sig-paren">(</span><em>dfs</em>, <em>sensorList</em>, <em>startDate</em>, <em>endDate</em>, <em>freq</em>, <em>freqInt</em>, <em>capPeriods</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#combineDfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.combineDfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>combine all dataframes into one big one, while merging all columns</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dfs</strong> – list of dataframes we want to merge</li>
+<li><strong>sensorList</strong> – list of sensornames, same order as dfs</li>
+<li><strong>startDate</strong> – global startDate we want to choose</li>
+<li><strong>endDate</strong> – global endDate we want to choose</li>
+<li><strong>freq</strong> – frequency as string that we want in the merged dataframe</li>
+<li><strong>freqInt</strong> – frequency as integer that we want in the merged dataframe</li>
+<li><strong>capPeriods</strong> – list of capture periods, same order and length as sensorList</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">merged dataframe</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.convertWhToW">
+<code class="descclassname">src.preprocessing.</code><code class="descname">convertWhToW</code><span class="sig-paren">(</span><em>dfs</em>, <em>sensorList</em>, <em>convToPower</em>, <em>capPeriods</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#convertWhToW"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.convertWhToW" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts energy to power, note that the column names are renamed from <code class="code docutils literal notranslate"><span class="pre">*energy</span></code> to <code class="code docutils literal notranslate"><span class="pre">*power</span></code>, everything inplace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – list of dataframes of various sensors</li>
+<li><strong>sensorList</strong> – list of the respective sensorname from dfs, order should correspond to dfs</li>
+<li><strong>capPeriods</strong> – list of capture periods of the sensornames from sensorList, order should be the same</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.getRawData">
+<code class="descclassname">src.preprocessing.</code><code class="descname">getRawData</code><span class="sig-paren">(</span><em>dfs</em>, <em>filteredSensorListRet</em>, <em>capPeriods</em>, <em>basedir</em>, <em>cip</em>, <em>startDate=None</em>, <em>endDate=None</em>, <em>cursor=None</em>, <em>key=None</em>, <em>filteredSensorListDB=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#getRawData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.getRawData" title="Permalink to this definition">¶</a></dt>
+<dd><p>We check first if there are raw datafiles available in <code class="code docutils literal notranslate"><span class="pre">basedir/cip</span></code>. If there aren’t any, we load the data from the MySQL db, but only if there is a cursor given. After loading the data from the database we store it in basedir/subdir</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">if there is no raw data hdf files present in <code class="code docutils literal notranslate"><span class="pre">basedir/cip</span></code> and no cursor is provided, the function simply returns and nothing happens</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – we load the dataframes of each sensor into this list</li>
+<li><strong>filteredSensorListRet</strong> – in this list we put the sensornames, the order is the same as in dfs</li>
+<li><strong>capPeriods</strong> – in this list we put the capture periods of tje sensors, the order is the same as in dfs</li>
+<li><strong>basedir</strong> – the rawdata is expected/stored in <code class="code docutils literal notranslate"><span class="pre">basedir/cip</span></code></li>
+<li><strong>cip</strong> – anonymized name of house</li>
+<li><strong>startDate</strong> – only required when we load the data from the db, not required if there are hdf files present</li>
+<li><strong>endDate</strong> – only required when we load the data form the db, not required if there are hdf files present</li>
+<li><strong>cursor</strong> – the db connection cursor, not required if there are hdf files present</li>
+<li><strong>key</strong> – shortName of house, not required if there are hdf files present</li>
+<li><strong>filteredSensorListDB</strong> – sensors we want to load from db; the actual names are constructed like this: <code class="code docutils literal notranslate"><span class="pre">[key+'{0}'.format(i)</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">filteredSensorListDB]</span></code>, not required if there are hdf files present</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.mergeTotalConsumptionC">
+<code class="descclassname">src.preprocessing.</code><code class="descname">mergeTotalConsumptionC</code><span class="sig-paren">(</span><em>dfs</em>, <em>filteredSensorList</em>, <em>filteredSensorList_OG</em>, <em>capPeriods</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#mergeTotalConsumptionC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.mergeTotalConsumptionC" title="Permalink to this definition">¶</a></dt>
+<dd><p>special preprocessing function for house C to merge the two sensors that measure the total consumption</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – list of dataframes, each dataframe contains values of one sensor</li>
+<li><strong>filteredSensorList</strong> – name of the sensors, order is the same as in dfs</li>
+<li><strong>filteredSensorList_OG</strong> – unmodified version, of filteredSensorList</li>
+<li><strong>capPeriods</strong> – capture periods of all sensors, order is the same as dfs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.preprocessBoilerPower">
+<code class="descclassname">src.preprocessing.</code><code class="descname">preprocessBoilerPower</code><span class="sig-paren">(</span><em>df2</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#preprocessBoilerPower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.preprocessBoilerPower" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates the average boiler power, because we have timestamps where the boiler is turned off/on often not following the capture period</p>
+<p>preprocessing is done as well (set index, interpolation)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df2</strong> – dataframe of boiler</li>
+<li><strong>key</strong> – sensorname</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new dataframe, in a 5 min grid</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.readCapPeriods">
+<code class="descclassname">src.preprocessing.</code><code class="descname">readCapPeriods</code><span class="sig-paren">(</span><em>capPeriods</em>, <em>filteredSensorList</em>, <em>basedir</em>, <em>subdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#readCapPeriods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.readCapPeriods" title="Permalink to this definition">¶</a></dt>
+<dd><p>aux function to read  the capture periods of the sensors from a hdf file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capPeriods</strong> – capture periods get stored in here</li>
+<li><strong>filteredSensorList</strong> – list of sensor names, same order as capPeriods will be</li>
+<li><strong>basedir</strong> – file is expected in <code class="code docutils literal notranslate"><span class="pre">os.path.join(basedir,os.path.join(subdir,&quot;capPeriods&quot;))+&quot;.hdf&quot;,</span> <span class="pre">key=&quot;data&quot;)</span></code></li>
+<li><strong>subdir</strong> – see description of basedir</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.readDFS">
+<code class="descclassname">src.preprocessing.</code><code class="descname">readDFS</code><span class="sig-paren">(</span><em>dfs</em>, <em>basedir</em>, <em>subdir</em>, <em>sensorList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#readDFS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.readDFS" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads the raw data into a list of dataframes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – we store the hdf files that are read in this list</li>
+<li><strong>basedir</strong> – we expect files to be in <code class="code docutils literal notranslate"><span class="pre">os.path.join(basedir,os.path.join(subdir,sensorname))+&quot;.hdf&quot;,</span> <span class="pre">key=&quot;data&quot;)</span></code></li>
+<li><strong>subdir</strong> – see description of param basedir</li>
+<li><strong>sensorList</strong> – this list gets filled with names of the sensors in dfs, the order is the same as in dfs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.roundDuplicateEliminateInterpolateResample">
+<code class="descclassname">src.preprocessing.</code><code class="descname">roundDuplicateEliminateInterpolateResample</code><span class="sig-paren">(</span><em>dfs</em>, <em>sensorList</em>, <em>ignoreList</em>, <em>capPeriods</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#roundDuplicateEliminateInterpolateResample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.roundDuplicateEliminateInterpolateResample" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">maybe resample first?</p>
+</div>
+<p>a lot of preprocessing like: setting index, date rounding, duplicate elimination, interpolation, everything inplace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – list of dataframes, where each is a sensor</li>
+<li><strong>sensorList</strong> – list of sensornames, same order as dfs</li>
+<li><strong>ignoreList</strong> – do not touch the sensors mentiones in this list</li>
+<li><strong>capPeriods</strong> – list of all capturePeriods, same order as sensorList (and length)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.saveCapPeriods">
+<code class="descclassname">src.preprocessing.</code><code class="descname">saveCapPeriods</code><span class="sig-paren">(</span><em>capPeriods</em>, <em>filteredSensorList</em>, <em>basedir</em>, <em>subdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#saveCapPeriods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.saveCapPeriods" title="Permalink to this definition">¶</a></dt>
+<dd><p>aux function to save the capture periods of the sensors in a hdf file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>capPeriods</strong> – list of capture periods</li>
+<li><strong>filteredSensorList</strong> – list of sensor names, same order as capPeriods</li>
+<li><strong>basedir</strong> – file is saved in <code class="code docutils literal notranslate"><span class="pre">os.path.join(basedir,os.path.join(subdir,&quot;capPeriods&quot;))+&quot;.hdf&quot;,</span> <span class="pre">key=&quot;data&quot;)</span></code></li>
+<li><strong>subdir</strong> – see description of basedir</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.preprocessing.saveDFS">
+<code class="descclassname">src.preprocessing.</code><code class="descname">saveDFS</code><span class="sig-paren">(</span><em>dfs</em>, <em>basedir</em>, <em>subdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/preprocessing.html#saveDFS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.preprocessing.saveDFS" title="Permalink to this definition">¶</a></dt>
+<dd><p>saving raw data from MySQL database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dfs</strong> – list of dataframes, each dataframe is a sensor</li>
+<li><strong>basedir</strong> – filepath is constructed like this: <code class="code docutils literal notranslate"><span class="pre">os.path.join(basedir,os.path.join(subdir,sensorname))+&quot;.hdf&quot;</span></code></li>
+<li><strong>subdir</strong> – see description of basedir</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.public">
+<span id="src-public-module"></span><h2>src.public module<a class="headerlink" href="#module-src.public" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.utils">
+<span id="src-utils-module"></span><h2>src.utils module<a class="headerlink" href="#module-src.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="src.utils.anonymise">
+<code class="descclassname">src.utils.</code><code class="descname">anonymise</code><span class="sig-paren">(</span><em>df</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#anonymise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.anonymise" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> – dataframe that we want to anonymize the columns of</li>
+<li><strong>key</strong> – key for anonymization dictionary</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.utils.countNaN">
+<code class="descclassname">src.utils.</code><code class="descname">countNaN</code><span class="sig-paren">(</span><em>array_like</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#countNaN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.countNaN" title="Permalink to this definition">¶</a></dt>
+<dd><p>used in combination with resampling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;3D&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">countNaN</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array_like</strong> – usually a partial column of dataframe</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">scalar value, namely the percentage of NaN values in array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.utils.generateHeatmap">
+<code class="descclassname">src.utils.</code><code class="descname">generateHeatmap</code><span class="sig-paren">(</span><em>df</em>, <em>size</em>, <em>pmin</em>, <em>pmax</em>, <em>resampleString</em>, <em>preName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#generateHeatmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.generateHeatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a heatplot of the missing data, using the seaborn visualization tool</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> – dataframe where each column is a sensor, index is a date series</li>
+<li><strong>size</strong> – (width, height) tuple in inches of output image</li>
+<li><strong>pmin</strong> – min percentage where colorscale should begin <span class="math notranslate nohighlight">\(\in [0,1)\)</span></li>
+<li><strong>pmax</strong> – max percentage where colorscale should end <span class="math notranslate nohighlight">\(\in (0,1]\)</span></li>
+<li><strong>resampleString</strong> – how much should be summarized in block visually, for example “3D” = 3 days: show percentage of NaN per 3 days</li>
+<li><strong>preName</strong> – image will be saved as <code class="code docutils literal notranslate"><span class="pre">preName+&quot;_&quot;+resampleString+&quot;.png&quot;</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.utils.mask_knans">
+<code class="descclassname">src.utils.</code><code class="descname">mask_knans</code><span class="sig-paren">(</span><em>df</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#mask_knans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.mask_knans" title="Permalink to this definition">¶</a></dt>
+<dd><p>we specify a maximum of consecutive NaN we allow to be interpolated</p>
+<p>Example usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;col&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;col&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_knans</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;col&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="mi">15</span><span class="o">*</span><span class="mi">60</span><span class="o">/</span><span class="mi">300</span><span class="p">)))</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> – column of pandas dataframe</li>
+<li><strong>x</strong> – maximum tolerance of NaN values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean mapping of rows where we should interpolate</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.utils.reportMissingData">
+<code class="descclassname">src.utils.</code><code class="descname">reportMissingData</code><span class="sig-paren">(</span><em>df</em>, <em>freq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/utils.html#reportMissingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.utils.reportMissingData" title="Permalink to this definition">¶</a></dt>
+<dd><p>writes start and end date of missing data to a csv file in the “missingData” directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> – dataframe with multiple sensors as columns</li>
+<li><strong>freq</strong> – frequency as integer that df uses</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="src" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, iHomeLab
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

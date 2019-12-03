@@ -1,0 +1,5 @@
+**/rawData
+**/datasets
+*.pyc
+*checkpoint.ipynb
+*.csv

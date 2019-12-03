@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>src.preprocessing &mdash; iHomeLab RAPT dataset 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> iHomeLab RAPT dataset
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">iHomeLab RAPT dataset</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>src.preprocessing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for src.preprocessing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">src.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">src.const</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">src.db</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+
+
+<div class="viewcode-block" id="convertWhToW"><a class="viewcode-back" href="../../src.html#src.preprocessing.convertWhToW">[docs]</a><span class="k">def</span> <span class="nf">convertWhToW</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">sensorList</span><span class="p">,</span> <span class="n">convToPower</span><span class="p">,</span>  <span class="n">capPeriods</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    converts energy to power, note that the column names are renamed from :code:`*energy` to :code:`*power`, everything inplace</span>
+
+<span class="sd">    :param dfs: list of dataframes of various sensors</span>
+<span class="sd">    :param sensorList: list of the respective sensorname from dfs, order should correspond to dfs</span>
+<span class="sd">    :param capPeriods: list of capture periods of the sensornames from sensorList, order should be the same</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">WhToJoule</span> <span class="o">=</span> <span class="mi">3600</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sensorList</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">convToPower</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">*</span><span class="n">WhToJoule</span><span class="o">/</span><span class="n">capPeriods</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">tochangeIdx</span> <span class="o">=</span> <span class="n">convToPower</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+            <span class="n">sensorList</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensorList</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span><span class="s2">&quot;power&quot;</span><span class="p">)},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="preprocessBoilerPower"><a class="viewcode-back" href="../../src.html#src.preprocessing.preprocessBoilerPower">[docs]</a><span class="k">def</span> <span class="nf">preprocessBoilerPower</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculates the average boiler power, because we have timestamps where the boiler is turned off/on often not following the capture period</span>
+
+<span class="sd">    preprocessing is done as well (set index, interpolation)</span>
+
+<span class="sd">    :param df2: dataframe of boiler </span>
+<span class="sd">    :param key: sensorname</span>
+
+<span class="sd">    :returns: new dataframe, in a 5 min grid</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">toProcessDates</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2017-10-15 02:15:02&#39;</span><span class="p">)]</span>
+    <span class="n">toProcessValues</span> <span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">dataDict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;DateTime&#39;</span> <span class="p">:</span> <span class="p">[],</span> <span class="n">key</span><span class="p">:[]}</span>
+    <span class="n">firstTime</span> <span class="o">=</span> <span class="kc">True</span> 
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">ceiledTime</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;DateTime&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">firstTime</span> <span class="ow">or</span> <span class="n">ceiledTime</span> <span class="o">==</span> <span class="n">recentTime</span><span class="p">):</span>
+            <span class="c1">#calculate integral</span>
+            <span class="n">accumVal</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">toProcessDates</span><span class="p">)):</span>
+                <span class="n">timeDel</span> <span class="o">=</span> <span class="p">(</span><span class="n">toProcessDates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">toProcessDates</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">seconds</span>
+                <span class="n">prevVal</span> <span class="o">=</span> <span class="n">toProcessValues</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> 
+                <span class="n">accumVal</span> <span class="o">+=</span> <span class="n">prevVal</span><span class="o">*</span><span class="n">timeDel</span>
+
+            <span class="n">endInterval</span> <span class="o">=</span> <span class="n">toProcessDates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span>
+            <span class="n">timeDel</span> <span class="o">=</span> <span class="p">(</span><span class="n">endInterval</span> <span class="o">-</span> <span class="n">toProcessDates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">seconds</span>
+            <span class="n">accumVal</span> <span class="o">+=</span> <span class="n">toProcessValues</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">timeDel</span>
+
+            <span class="n">accumVal</span> <span class="o">/=</span> <span class="mi">300</span> <span class="c1"># P = W /t divide by capture period</span>
+
+            <span class="c1">#append to dict for new dataframe</span>
+            <span class="n">dataDict</span><span class="p">[</span><span class="s2">&quot;DateTime&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">endInterval</span><span class="p">)</span>
+            <span class="n">dataDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accumVal</span><span class="p">)</span>
+
+            <span class="n">toProcessDates</span> <span class="o">=</span> <span class="p">[</span><span class="n">endInterval</span><span class="p">]</span>
+            <span class="n">toProcessValues</span> <span class="o">=</span> <span class="p">[</span><span class="n">toProcessValues</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">recentTime</span> <span class="o">=</span> <span class="n">ceiledTime</span> 
+
+        <span class="n">firstTime</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">toProcessDates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;DateTime&quot;</span><span class="p">])</span>
+        <span class="n">toProcessValues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">recentTime</span> <span class="o">=</span> <span class="n">ceiledTime</span>
+    <span class="n">dfBoil</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataDict</span><span class="p">)</span> 
+    <span class="n">dfBoil</span> <span class="o">=</span> <span class="n">dfBoil</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">)</span>
+    <span class="n">dfBoil5min</span> <span class="o">=</span> <span class="n">dfBoil</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span>
+    <span class="n">dfBoil5min</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfBoil5min</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_knans</span><span class="p">(</span><span class="n">dfBoil5min</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">interpolationTime</span><span class="o">*</span><span class="mi">60</span><span class="o">/</span><span class="mi">300</span><span class="p">)))</span>
+
+
+    <span class="k">return</span> <span class="n">dfBoil5min</span></div>
+
+<span class="c1">#</span>
+
+<span class="c1">#set DateTime columns as index, round dates (maybe resample first ?), remove duplicates, interpolate, resample to 300s</span>
+<div class="viewcode-block" id="roundDuplicateEliminateInterpolateResample"><a class="viewcode-back" href="../../src.html#src.preprocessing.roundDuplicateEliminateInterpolateResample">[docs]</a><span class="k">def</span> <span class="nf">roundDuplicateEliminateInterpolateResample</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">sensorList</span><span class="p">,</span> <span class="n">ignoreList</span><span class="p">,</span> <span class="n">capPeriods</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. warning:: maybe resample first?</span>
+
+<span class="sd">    a lot of preprocessing like: setting index, date rounding, duplicate elimination, interpolation, everything inplace</span>
+
+<span class="sd">    :param dfs: list of dataframes, where each is a sensor</span>
+<span class="sd">    :param sensorList: list of sensornames, same order as dfs</span>
+<span class="sd">    :param ignoreList: do not touch the sensors mentiones in this list</span>
+<span class="sd">    :param capPeriods: list of all capturePeriods, same order as sensorList (and length)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">interpolationTime</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sensorList</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ignoreList</span><span class="p">:</span>
+            <span class="n">capPer</span> <span class="o">=</span> <span class="n">capPeriods</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">capPerStr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">capPer</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;s&quot;</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">)</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">capPerStr</span><span class="p">)</span><span class="c1">#round timestamps to capturePeriod</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">~</span><span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)]</span><span class="c1">#remove possible duplicates</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="n">capPerStr</span><span class="p">)</span>
+            <span class="n">interpLimit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interpolationTime</span><span class="o">*</span><span class="mi">60</span><span class="o">/</span><span class="n">capPer</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">interpLimit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="c1">#for weather data (hourly)</span>
+                <span class="n">interpLimit</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1">#3 hours of missing data will be interpolated</span>
+            <span class="n">numNaVal</span><span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_knans</span><span class="p">(</span><span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">],</span> <span class="n">interpLimit</span><span class="p">))</span>
+            <span class="n">numNaVal</span><span class="o">=</span> <span class="n">numNaVal</span> <span class="o">-</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="c1">#print(name, numNaVal)</span>
+            <span class="k">if</span> <span class="n">capPer</span> <span class="o">!=</span> <span class="mi">300</span> <span class="ow">and</span> <span class="n">capPer</span> <span class="o">!=</span> <span class="mi">3600</span><span class="p">:</span>
+                <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="n">capPeriods</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span></div>
+
+                
+<span class="c1">#combine all single dfs into one big df        </span>
+<div class="viewcode-block" id="combineDfs"><a class="viewcode-back" href="../../src.html#src.preprocessing.combineDfs">[docs]</a><span class="k">def</span> <span class="nf">combineDfs</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">sensorList</span><span class="p">,</span>  <span class="n">startDate</span><span class="p">,</span><span class="n">endDate</span><span class="p">,</span><span class="n">freq</span><span class="p">,</span> <span class="n">freqInt</span><span class="p">,</span><span class="n">capPeriods</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    combine all dataframes into one big one, while merging all columns</span>
+
+<span class="sd">    :param dfs: list of dataframes we want to merge</span>
+<span class="sd">    :param sensorList: list of sensornames, same order as dfs</span>
+<span class="sd">    :param startDate: global startDate we want to choose</span>
+<span class="sd">    :param endDate: global endDate we want to choose</span>
+<span class="sd">    :param freq: frequency as string that we want in the merged dataframe</span>
+<span class="sd">    :param freqInt: frequency as integer that we want in the merged dataframe</span>
+<span class="sd">    :param capPeriods: list of capture periods, same order and length as sensorList</span>
+
+<span class="sd">    :returns: merged dataframe</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">t_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">startDate</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">endDate</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span>
+
+    <span class="n">df_templ</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;DateTime&#39;</span><span class="p">:</span> <span class="n">t_index</span><span class="p">,</span> <span class="s1">&#39;dummy&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t_index</span><span class="p">))]})</span>
+    <span class="n">df_templ</span> <span class="o">=</span> <span class="n">df_templ</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">t_index</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sensorList</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">capPeriods</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">freqInt</span><span class="p">:</span>
+            <span class="n">df_templ</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="n">df_templ</span> <span class="o">=</span> <span class="n">df_templ</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;dummy&#39;</span><span class="p">,</span> <span class="s2">&quot;DateTime&quot;</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">df_templ</span></div>
+
+
+<div class="viewcode-block" id="saveDFS"><a class="viewcode-back" href="../../src.html#src.preprocessing.saveDFS">[docs]</a><span class="k">def</span> <span class="nf">saveDFS</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span><span class="n">subdir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    saving raw data from MySQL database</span>
+
+<span class="sd">    :param dfs: list of dataframes, each dataframe is a sensor</span>
+<span class="sd">    :param basedir: filepath is constructed like this: :code:`os.path.join(basedir,os.path.join(subdir,sensorname))+&quot;.hdf&quot;`</span>
+<span class="sd">    :param subdir: see description of basedir</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subdir</span><span class="p">,</span><span class="n">name</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;.hdf&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="readDFS"><a class="viewcode-back" href="../../src.html#src.preprocessing.readDFS">[docs]</a><span class="k">def</span> <span class="nf">readDFS</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span><span class="n">subdir</span><span class="p">,</span> <span class="n">sensorList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    reads the raw data into a list of dataframes</span>
+<span class="sd">    </span>
+<span class="sd">    :param dfs: we store the hdf files that are read in this list</span>
+<span class="sd">    :param basedir: we expect files to be in :code:`os.path.join(basedir,os.path.join(subdir,sensorname))+&quot;.hdf&quot;, key=&quot;data&quot;)`</span>
+<span class="sd">    :param subdir: see description of param basedir</span>
+<span class="sd">    :param sensorList: this list gets filled with names of the sensors in dfs, the order is the same as in dfs</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mypath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span><span class="n">subdir</span><span class="p">),</span><span class="s2">&quot;*.hdf&quot;</span><span class="p">)</span>
+    
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">mypath</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">sensorList</span><span class="p">[:]</span>
+    <span class="k">del</span> <span class="n">dfs</span><span class="p">[:]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;capPeriods&quot;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s2">&quot;c_hp_on_utility&quot;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">sensorList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="saveCapPeriods"><a class="viewcode-back" href="../../src.html#src.preprocessing.saveCapPeriods">[docs]</a><span class="k">def</span> <span class="nf">saveCapPeriods</span><span class="p">(</span><span class="n">capPeriods</span><span class="p">,</span><span class="n">filteredSensorList</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span><span class="n">subdir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    aux function to save the capture periods of the sensors in a hdf file</span>
+
+<span class="sd">    :param capPeriods: list of capture periods</span>
+<span class="sd">    :param filteredSensorList: list of sensor names, same order as capPeriods</span>
+<span class="sd">    :param basedir: file is saved in :code:`os.path.join(basedir,os.path.join(subdir,&quot;capPeriods&quot;))+&quot;.hdf&quot;, key=&quot;data&quot;)`</span>
+<span class="sd">    :param subdir: see description of basedir</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataDict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">capPeriodsCus</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">capPeriods</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filteredSensorList</span><span class="p">)):</span>
+        <span class="n">dataDict</span><span class="p">[</span><span class="n">filteredSensorList</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">capPeriodsCus</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">metaDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">dataDict</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;capPeriods&quot;</span>
+    <span class="n">metaDF</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subdir</span><span class="p">,</span><span class="n">name</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;.hdf&quot;</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="readCapPeriods"><a class="viewcode-back" href="../../src.html#src.preprocessing.readCapPeriods">[docs]</a><span class="k">def</span> <span class="nf">readCapPeriods</span><span class="p">(</span><span class="n">capPeriods</span><span class="p">,</span><span class="n">filteredSensorList</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span><span class="n">subdir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    aux function to read  the capture periods of the sensors from a hdf file</span>
+<span class="sd">    </span>
+<span class="sd">    :param capPeriods: capture periods get stored in here</span>
+<span class="sd">    :param filteredSensorList: list of sensor names, same order as capPeriods will be</span>
+<span class="sd">    :param basedir: file is expected in :code:`os.path.join(basedir,os.path.join(subdir,&quot;capPeriods&quot;))+&quot;.hdf&quot;, key=&quot;data&quot;)`</span>
+<span class="sd">    :param subdir: see description of basedir</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;capPeriods&quot;</span>
+    <span class="n">metaDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subdir</span><span class="p">,</span><span class="n">name</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;.hdf&quot;</span><span class="p">,</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+    <span class="n">dataDict</span><span class="o">=</span><span class="p">{}</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">metaDF</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">dataDict</span><span class="p">[</span><span class="n">el</span><span class="p">]</span><span class="o">=</span> <span class="n">metaDF</span><span class="p">[</span><span class="n">el</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">del</span> <span class="n">capPeriods</span><span class="p">[:]</span>
+
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">filteredSensorList</span><span class="p">:</span>
+        <span class="n">capPeriods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataDict</span><span class="p">[</span><span class="n">el</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="getRawData"><a class="viewcode-back" href="../../src.html#src.preprocessing.getRawData">[docs]</a><span class="k">def</span> <span class="nf">getRawData</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">filteredSensorListRet</span><span class="p">,</span> <span class="n">capPeriods</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span><span class="n">cip</span><span class="p">,</span><span class="n">startDate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endDate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="n">filteredSensorListDB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    We check first if there are raw datafiles available in :code:`basedir/cip`. If there aren&#39;t any, we load the data from the MySQL db, but only if there is a cursor given. After loading the data from the database we store it in basedir/subdir</span>
+<span class="sd">    </span>
+<span class="sd">    .. warning:: if there is no raw data hdf files present in :code:`basedir/cip` and no cursor is provided, the function simply returns and nothing happens</span>
+
+
+<span class="sd">    :param dfs: we load the dataframes of each sensor into this list</span>
+<span class="sd">    :param filteredSensorListRet: in this list we put the sensornames, the order is the same as in dfs</span>
+<span class="sd">    :param capPeriods: in this list we put the capture periods of tje sensors, the order is the same as in dfs</span>
+<span class="sd">    :param basedir: the rawdata is expected/stored in :code:`basedir/cip`</span>
+<span class="sd">    :param cip: anonymized name of house</span>
+<span class="sd">    :param startDate: only required when we load the data from the db, not required if there are hdf files present</span>
+<span class="sd">    :param endDate: only required when we load the data form the db, not required if there are hdf files present</span>
+<span class="sd">    :param cursor: the db connection cursor, not required if there are hdf files present</span>
+<span class="sd">    :param key: shortName of house, not required if there are hdf files present</span>
+<span class="sd">    :param filteredSensorListDB: sensors we want to load from db; the actual names are constructed like this: :code:`[key+&#39;{0}&#39;.format(i) for i in filteredSensorListDB]`, not required if there are hdf files present</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">readDFS</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">basedir</span><span class="p">,</span> <span class="n">cip</span><span class="p">,</span> <span class="n">filteredSensorListRet</span><span class="p">):</span>
+
+        <span class="n">readCapPeriods</span><span class="p">(</span><span class="n">capPeriods</span><span class="p">,</span><span class="n">filteredSensorListRet</span><span class="p">,</span> <span class="n">rawDataBaseDir</span><span class="p">,</span> <span class="n">cip</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;found raw hdf files&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;access database to get data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cursor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;need to access db, no db cursor given, abort&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">filteredSensorList</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">filteredSensorListDB</span><span class="p">]</span>
+        <span class="n">filteredSensorListAnon</span> <span class="o">=</span> <span class="p">[</span><span class="n">cip</span><span class="o">+</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">filteredSensorListDB</span><span class="p">]</span>
+
+        <span class="n">capPeriods</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">getCapturePeriodForSensorName</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">filteredSensorList</span><span class="p">])</span>
+
+        <span class="k">del</span> <span class="n">dfs</span><span class="p">[:]</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">filteredSensorList</span><span class="p">:</span>
+            <span class="n">succ</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">getDFForQueryAnon</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span><span class="n">queryForSensor</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span><span class="n">endDate</span><span class="p">),</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">succ</span><span class="p">:</span>
+                <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawDataBaseDir</span><span class="p">,</span> <span class="n">cip</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawDataBaseDir</span><span class="p">,</span> <span class="n">cip</span><span class="p">))</span>
+        <span class="n">saveDFS</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">rawDataBaseDir</span><span class="p">,</span><span class="n">cip</span><span class="p">)</span>
+        <span class="n">saveCapPeriods</span><span class="p">(</span><span class="n">capPeriods</span><span class="p">,</span><span class="n">filteredSensorListAnon</span><span class="p">,</span> <span class="n">rawDataBaseDir</span><span class="p">,</span><span class="n">cip</span><span class="p">)</span>
+        <span class="n">filteredSensorListRet</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">filteredSensorListAnon</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mergeTotalConsumptionC"><a class="viewcode-back" href="../../src.html#src.preprocessing.mergeTotalConsumptionC">[docs]</a><span class="k">def</span> <span class="nf">mergeTotalConsumptionC</span><span class="p">(</span><span class="n">dfs</span><span class="p">,</span> <span class="n">filteredSensorList</span><span class="p">,</span><span class="n">filteredSensorList_OG</span><span class="p">,</span><span class="n">capPeriods</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    special preprocessing function for house C to merge the two sensors that measure the total consumption</span>
+
+<span class="sd">    :param dfs: list of dataframes, each dataframe contains values of one sensor</span>
+<span class="sd">    :param filteredSensorList: name of the sensors, order is the same as in dfs</span>
+<span class="sd">    :param filteredSensorList_OG: unmodified version, of filteredSensorList</span>
+<span class="sd">    :param capPeriods: capture periods of all sensors, order is the same as dfs</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HHPowerDfIdx</span> <span class="o">=</span> <span class="n">filteredSensorList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;C_hh_power&#39;</span><span class="p">)</span>
+    <span class="n">TotalConsPowerDfIdx</span> <span class="o">=</span> <span class="n">filteredSensorList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">)</span>
+    <span class="n">dfHHPower</span><span class="o">=</span><span class="n">dfs</span><span class="p">[</span><span class="n">HHPowerDfIdx</span><span class="p">]</span>
+    <span class="n">dfTotalCons</span><span class="o">=</span><span class="n">dfs</span><span class="p">[</span><span class="n">TotalConsPowerDfIdx</span><span class="p">]</span>
+
+    <span class="n">dfHHPower</span><span class="o">=</span><span class="n">dfHHPower</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">)</span>
+    <span class="n">dfTotalCons</span> <span class="o">=</span> <span class="n">dfTotalCons</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">)</span>
+
+
+    <span class="n">interpLimitHHPower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interpolationTime</span><span class="o">*</span><span class="mi">60</span><span class="o">/</span><span class="mi">120</span><span class="p">)</span>
+    <span class="n">interpLimitTotalCons</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interpolationTime</span><span class="o">*</span><span class="mi">60</span><span class="o">/</span><span class="mi">300</span><span class="p">)</span>
+
+    <span class="c1">#insert NaN for missing values</span>
+    <span class="n">dfHHPower</span><span class="o">.</span><span class="n">index</span><span class="o">=</span> <span class="n">dfHHPower</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;120s&quot;</span><span class="p">)</span>
+    <span class="n">dfTotalCons</span><span class="o">.</span><span class="n">index</span><span class="o">=</span> <span class="n">dfTotalCons</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span>
+    <span class="n">dfHHPower</span> <span class="o">=</span> <span class="n">dfHHPower</span><span class="p">[</span><span class="o">~</span><span class="n">dfHHPower</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)]</span>
+    <span class="n">dfTotalCons</span> <span class="o">=</span> <span class="n">dfTotalCons</span><span class="p">[</span><span class="o">~</span><span class="n">dfTotalCons</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">)]</span>
+
+    <span class="n">dfHHPower</span> <span class="o">=</span> <span class="n">dfHHPower</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s2">&quot;120s&quot;</span><span class="p">)</span>
+    <span class="n">dfTotalCons</span> <span class="o">=</span> <span class="n">dfTotalCons</span><span class="o">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span>
+
+    <span class="n">dfHHPower</span><span class="p">[</span><span class="s1">&#39;C_hh_power&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">dfHHPower</span><span class="p">[</span><span class="s1">&#39;C_hh_power&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_knans</span><span class="p">(</span><span class="n">dfHHPower</span><span class="p">[</span><span class="s1">&#39;C_hh_power&#39;</span><span class="p">],</span> <span class="n">interpLimitHHPower</span><span class="p">))</span>
+    <span class="n">dfTotalCons</span><span class="p">[</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfTotalCons</span><span class="p">[</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_knans</span><span class="p">(</span><span class="n">dfTotalCons</span><span class="p">[</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">],</span> <span class="n">interpLimitTotalCons</span><span class="p">))</span>
+
+    <span class="n">dfHHPower</span><span class="o">=</span> <span class="n">dfHHPower</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;300s&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">dfHHPower</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;C_hh_power&#39;</span><span class="p">:</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">},</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dfTotalConsPowerComb</span> <span class="o">=</span> <span class="n">dfHHPower</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dfTotalCons</span><span class="p">)</span>
+
+    <span class="c1">#put back in dfs array</span>
+
+    <span class="k">del</span> <span class="n">filteredSensorList</span><span class="p">[</span><span class="n">HHPowerDfIdx</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">filteredSensorList_OG</span><span class="p">[</span><span class="n">HHPowerDfIdx</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">capPeriods</span><span class="p">[</span><span class="n">HHPowerDfIdx</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">dfs</span><span class="p">[</span><span class="n">HHPowerDfIdx</span><span class="p">]</span>
+    
+
+    <span class="n">TotalConsPowerDfIdx</span> <span class="o">=</span> <span class="n">filteredSensorList</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;C_total_cons_power&#39;</span><span class="p">)</span>
+    <span class="n">dfs</span><span class="p">[</span><span class="n">TotalConsPowerDfIdx</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfTotalConsPowerComb</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, iHomeLab
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
