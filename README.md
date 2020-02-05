@@ -12,7 +12,7 @@ The repo is organized as follows:
 - `src`: contains the main functions used for the preprocessing of the raw data
 
 ## Citation 
-P. Huber, M. Ott, M. Friedli, A. Rumsch, A. Paice, "Residential Power Traces for Five Houses: the iHomeLab RAPT Dataset", to be sumbitted.
+Huber, P.; Ott, M.; Friedli, M.; Rumsch, A.; Paice, A. Residential Power Traces for Five Houses: The iHomeLab RAPT Dataset. Data 2020, 5, 17, <https://doi.org/10.3390/data5010017>
 
 Comments and Questions can be sent to patrick.huber@ihomelab.ch (Answers might take a while).
 
