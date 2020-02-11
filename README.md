@@ -1,7 +1,7 @@
 # Intro
 
 This repository contains:
-- code to pre-process the RAPT Dataset collected by the iHomeLab. A description of the dataset can be found in the corresponding publication, see next section. 
+- code to pre-process the RAPT Dataset collected by the iHomeLab. The dataset is available here: <https://doi.org/10.5281/zenodo.3581895>. A detailed description of the dataset can be found in the corresponding publication, see next section. 
 - some simple Jupyter notebooks to load and visualize the data.
 
 The repo is organized as follows:
