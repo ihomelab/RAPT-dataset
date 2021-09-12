@@ -37,15 +37,16 @@ Output:
 
 ## Additional Information
 
-- We got the question about tariffs for house B and C. Please find them below:
+- We got the question about tariffs for house B and C. Please be aware that the numbers below have been asked to the home 
+  owners some time after the study (Sept 2021). Small deviations with respect to the actual values at the time of the study are to be expected.
   
-  |        |                               | Periods |       | Given in \[CHF/kWh\]  |              |                   |
-  | ------ | ----------------------------- | ------- | ----- | --------------------- | ------------ | ----------------- |
-  | Haus B |                               | Start   | End   | B\_total\_cons\_power |              |                   |
-  |        | high-tariff (not on weekends) | 07:00   | 19:00 | ~0.21                 |              |                   |
-  |        | low-tariff (complete weekend) | 19:00   | 07:00 | ~0.18                 |              |                   |
-  | Haus C |                               |         |       | C\_total\_cons\_power | C\_hp\_power | C\_to\_net\_power |
-  |        | high-tariff                   | 07:00   | 22:00 | ~0.26                 | ~0.17        | 0.08              |
-  |        | low-tariff                    | 22:00   | 07:00 | ~0.16                 | ~0.14        | 0.08              |
+  |        |                               | Periods |       | Given in \[CHF/kWh\]  |              |                            |
+  | ------ | ----------------------------- | ------- | ----- | --------------------- | ------------ | -------------------------- |
+  | Haus B |                               | Start   | End   | B\_total\_cons\_power |              | B_to_net_power             |
+  |        | high-tariff (not on weekends) | 07:00   | 19:00 | ~0.21                 |              | Q1/Q4: ~0.13, Q2/Q3: ~0.07 |
+  |        | low-tariff (complete weekend) | 19:00   | 07:00 | ~0.18                 |              |                            |
+  | Haus C |                               |         |       | C\_total\_cons\_power | C\_hp\_power | C\_to\_net\_power          |
+  |        | high-tariff                   | 07:00   | 22:00 | ~0.26                 | ~0.17        | 0.08                       |
+  |        | low-tariff                    | 22:00   | 07:00 | ~0.16                 | ~0.14        | 0.08                       |
 
 
